@@ -2,11 +2,10 @@ import { streamText } from 'ai';
 import { createOpenAI } from '@ai-sdk/openai';
 import { z } from 'zod';
 
-// 创建AI客户端 - 使用qwen-3-235b模型
+// 创建AI客户端 - 使用OpenAI兼容的模型
 const client = createOpenAI({
-  name: 'qwen',
   apiKey: process.env.AI_GATEWAY_API_KEY || process.env.OPENAI_API_KEY,
-  baseURL: 'https://gateway.ai.cloudflare.com/v1/your-account-id/your-gateway-id/openai', // 如果使用Vercel AI Gateway
+  // 如果使用Vercel AI Gateway，baseURL会自动配置
 });
 
 // NPC角色定义
@@ -123,9 +122,9 @@ export async function POST(req: Request) {
       }
     }
 
-    // 使用qwen-3-235b模型生成回应
+    // 使用GPT-4模型生成回应
     const result = await streamText({
-      model: client('alibaba/qwen-3-235b'), // 使用老板推荐的最快模型
+      model: client('gpt-4o-mini'), // 使用高效的GPT-4模型
       messages: messages.map(msg => ({
         ...msg,
         content: msg.content + (msg.role === 'system' ? additionalContext : '')
